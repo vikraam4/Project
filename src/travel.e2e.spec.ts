@@ -23,7 +23,6 @@ test.describe("Book Flight", () => {
       .getByText("Mumbai")
       .click();
     await page.getByText("Travellers & Class").click();
-    await page.getByText("2").first().click();
     await page.getByRole("button", { name: "APPLY" }).click();
     await page.getByText("Search").click();
   });

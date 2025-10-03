@@ -6,15 +6,13 @@ export default class BookingPage {
   }
 
   selectors = {
-    selectFromCity: (): Locator => this.page.getByPlaceholder("From"),
-    selectToCity: (): Locator => this.page.getByPlaceholder("To"),
-    chooseFirstOption: (): Locator =>
-      this.page.getByRole("option").locator("span"),
+    selectFromCity: (): Locator => this.page.getByText("From", { exact: true }),
+    selectToCity: (): Locator => this.page.getByText("To", { exact: true }),
     travellerandClass: (): Locator => this.page.getByText("Travellers & Class"),
     chooseBusinessClass: (): Locator => this.page.getByText("NEWBusiness"),
     applyButton: (): Locator =>
-      this.page.getByRole("button", { name: "APPLY" }),
-    seachButton: (): Locator => this.page.getByText("Search"),
+      this.page.page.getByRole("button", { name: "APPLY" }),
+    seachButton: (): Locator => this. page.getByText("Search"),
   };
 
   waitFor = {
