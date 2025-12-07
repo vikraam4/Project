@@ -3,7 +3,7 @@ import Registration from "../pageobject/registration.page";
 import { URLS } from "../constants/links";
 import { CONSTANTS } from "../constants/constants";
 
-test.describe("Search Items", () => {
+test.describe("Registration", () => {
   let page: Page;
   let registrationPage: Registration;
 
@@ -13,7 +13,7 @@ test.describe("Search Items", () => {
     registrationPage = new Registration(page);
   });
 
-  test("TC001 - Registration - Create Account", async () => {
+  test("TC001 - Create Account", async () => {
     await page.goto(URLS.pages.login);
     await registrationPage.selectors.signUpSignInBtn().click();
     await registrationPage.selectors.signUpNameInput().click();
