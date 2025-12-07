@@ -5,7 +5,7 @@ export default defineConfig({
     timeout: 30000,
     use: { 
         headless: false,
-        baseURL: 'https://www.goibibo.com/'
+        baseURL: 'https://automationexercise.com/'
     }
     // reporter: [
     //     ['list'], // Default console reporter
