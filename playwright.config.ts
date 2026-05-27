@@ -12,8 +12,7 @@ export default defineConfig({
     headless: true,
     baseURL: "https://automationexercise.com/",
     screenshot: "only-on-failure",
-    video: "on",
-    trace: "on"
+    video: "on"
 
   },
 
@@ -48,5 +47,5 @@ export default defineConfig({
   ],
 
   outputDir: "test-results/",
-  
+
 });
