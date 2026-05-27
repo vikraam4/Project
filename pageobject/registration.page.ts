@@ -39,6 +39,11 @@ export default class Registration {
     return `auto_${Date.now()}_${Math.floor(Math.random() * 1000)}@gmail.com`;
   }
 
+  static generateRandomPassword() {
+    return `Pass@${Date.now()}${Math.floor(Math.random() * 1000)}`;
+
+  }
+
   async retry(action: () => Promise<void>, retries = 3) {
 
     for (let i = 0; i < retries; i++) {
@@ -54,17 +59,21 @@ export default class Registration {
   }
 
   async createAccount(createAccount: any) {
-    await this.page.goto(URLS.pages.login);
+    const randomEmail = Registration.generateRandomEmail();
+    const randomPassword = Registration.generateRandomPassword();
 
+    await this.page.goto(URLS.pages.login);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.signUpSignInBtn().click();
     await this.selectors.signUpNameInput().fill(createAccount.username);
-    await this.selectors.signUpEmailInput().fill(createAccount.email);
+    await this.selectors.signUpEmailInput().fill(randomEmail);
+    console.log("Email:", randomEmail);
     await this.selectors.signUpBtn().click();
 
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.checkBox(createAccount.title || "Mr.").check();
-    await this.selectors.signUpPasswordInput().fill(createAccount.password);
+    await this.selectors.signUpPasswordInput().fill(randomPassword);
+    console.log("Password:", randomPassword);
     await this.selectors.dobDateSelect().selectOption(createAccount.date);
     await this.selectors.dobMonthSelect().selectOption(createAccount.month);
     await this.selectors.dobYearSelect().selectOption(createAccount.year);
@@ -77,18 +86,19 @@ export default class Registration {
     await this.selectors.zipcodeInput().fill(createAccount.zipcode);
     await this.selectors.mobileNumberInput().fill(createAccount.mobile);
     await this.selectors.createAccountBtn().click();
-
     await this.page.waitForLoadState('domcontentloaded');
     await expect(this.selectors.accountCreatedDeletedText()).toContainText(createAccount.accountCreatedMsg);
+    console.log("✓ Account Created Successfully!")
     await this.selectors.continueBtn().click();
 
   }
 
-   async deleteAccount(accountDelete: any){
+  async deleteAccount(accountDelete: any) {
     await this.page.goto(URLS.pages.home);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.deleteBtn().click();
     await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accountDeletedMsg);
+        console.log("✓ Account Deleted Successfully!");
 
   }
 }
