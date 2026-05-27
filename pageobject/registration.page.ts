@@ -29,7 +29,8 @@ export default class Registration {
     createAccountBtn: (): Locator => this.page.getByRole('button', { name: 'Create Account' }),
     accountCreatedDeletedText: (): Locator => this.page.locator('b'),
     continueBtn: (): Locator => this.page.getByRole('link', { name: 'Continue' }),
-    deleteBtn: (): Locator => this.page.getByRole('link', { name: ' Delete Account' })
+    deleteBtn: (): Locator => this.page.getByRole('link', { name: ' Delete Account' }),
+    closeAdButton: (): Locator => this.page.locator('iframe[name="aswift_2"]').contentFrame().getByRole('button', { name: 'Close ad' }),
   };
 
   waitFor = {
@@ -37,13 +38,20 @@ export default class Registration {
   };
 
   static generateRandomEmail() {
-    return `auto_${Date.now()}_${Math.floor(Math.random() * 1000)}@gmail.com`;
+    return `perform${Math.floor(Math.random() * 100000)}@autoexercise.com`;
   }
 
   static generateRandomPassword() {
-    return `Pass@${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    return `Pass@${Math.floor(Math.random() * 100000)}`;
 
   }
+
+async clickCloseAdButton() {
+  if (await this.selectors.closeAdButton().isVisible()) {
+    await this.selectors.closeAdButton().click();
+  }
+  await this.waitFor;
+}
 
   async retry(action: () => Promise<any>, retries = 3) {
 
@@ -64,15 +72,16 @@ export default class Registration {
     }
   }
 
+
   async createAccount(createAccount: any) {
     const randomEmail = Registration.generateRandomEmail();
     const randomPassword = Registration.generateRandomPassword();
 
     await this.retry(async () => {
-
       await this.page.goto(URLS.pages.login);
-
     });
+
+    await this.page.waitForURL(URLS.pages.login);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.signUpSignInBtn().click();
     await this.selectors.signUpNameInput().fill(createAccount.username);
@@ -105,10 +114,12 @@ export default class Registration {
 
   async deleteAccount(accountDelete: any) {
 
+    await this.clickCloseAdButton();
+
     await this.retry(async () => {
       await this.page.goto(URLS.pages.home);
     });
-
+    await this.page.waitForURL(URLS.pages.home);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.deleteBtn().click();
     await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accountDeletedMsg);
@@ -119,7 +130,7 @@ export default class Registration {
     await this.retry(async () => {
       await this.page.goto(URLS.pages.login);
     });
-
+    await this.page.waitForURL(URLS.pages.login);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.signUpSignInBtn().click();
     await this.selectors.signUpNameInput().fill(existingUser.username);

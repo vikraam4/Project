@@ -10,7 +10,8 @@ export const URLS = {
   pages: {
     home: `${BASE}/`,
     login: `${BASE}/login`,
-    signup: `${BASE}/signup`
+    signup: `${BASE}/signup`,
+    accountCreated: `${BASE}/account_created`
   },
 
   // Logged-in user pages
