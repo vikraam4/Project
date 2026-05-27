@@ -1,6 +1,6 @@
 import { test, Page } from "@playwright/test";
 import Registration from "../../pageobject/registration.page";
-import testData from "../../test-data/TC001/TC001.json"
+import testData from "../../test-data/TC001/TC001.json";
 
 test.describe("Registration", () => {
   let page: Page;

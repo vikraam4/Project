@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { URLS } from "../constants/links";
-export default class SignUpSignIn {
+
+export default class Registration {
   protected readonly page: Page;
   constructor(page: Page) {
     this.page = page;
@@ -87,13 +88,7 @@ export default class SignUpSignIn {
     await this.page.goto(URLS.pages.home);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.deleteBtn().click();
-    await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accounrDeletedMsg);
+    await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accountDeletedMsg);
 
   }
 }
-
-// utils/generator.js
-export function generateRandomEmail() {
-  return `auto_${Date.now()}_${Math.floor(Math.random() * 1000)}@gmail.com`;
-}
-

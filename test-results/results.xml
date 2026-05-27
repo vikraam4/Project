@@ -1,6 +1,6 @@
-<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="13.050552">
-<testsuite name="TC001/registeration.e2e.spec.ts" timestamp="2026-05-27T08:56:51.036Z" hostname="" tests="1" failures="0" skipped="0" time="12.263" errors="0">
-<testcase name="Registration › TC001 - Create Account and Delete" classname="TC001/registeration.e2e.spec.ts" time="12.263">
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="15.315648000000001">
+<testsuite name="TC001/registeration.e2e.spec.ts" timestamp="2026-05-27T09:08:15.701Z" hostname="" tests="1" failures="0" skipped="0" time="14.201" errors="0">
+<testcase name="Registration › TC001 - Create Account and Delete" classname="TC001/registeration.e2e.spec.ts" time="14.201">
 </testcase>
 </testsuite>
 </testsuites>

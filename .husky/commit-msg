@@ -2,7 +2,7 @@
 
 commit_msg=$(cat "$1")
 
-if [[ ! "$commit_msg" =~ ^VIK49: ]]; then
+if ! echo "$commit_msg" | grep -q "^VIK49:"; then
   echo "❌ Commit message must start with VIK49:"
   exit 1
 fi
