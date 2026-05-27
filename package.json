@@ -3,11 +3,13 @@
     "playwright": "^1.60.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0"
+    "@playwright/test": "^1.60.0",
+    "husky": "^9.1.7"
   },
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:report": "playwright test --reporter=allure-playwright"
+    "test:report": "playwright test --reporter=allure-playwright",
+    "prepare": "husky"
   }
 }
