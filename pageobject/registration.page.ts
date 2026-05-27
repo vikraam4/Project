@@ -1,4 +1,5 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
+import { URLS } from "../constants/links";
 export default class SignUpSignIn {
   protected readonly page: Page;
   constructor(page: Page) {
@@ -10,8 +11,7 @@ export default class SignUpSignIn {
     signUpNameInput: (): Locator => this.page.getByRole('textbox', { name: 'Name' }),
     signUpEmailInput: (): Locator => this.page.locator('form').filter({ hasText: 'Signup' }).getByPlaceholder('Email Address'),
     signUpBtn: (): Locator => this.page.getByRole('button', { name: 'Signup' }),
-    mrCheckBox: (): Locator =>
-      this.page.getByRole('radio', { name: 'Mr.' }),
+    checkBox: (title: string): Locator => this.page.getByRole("radio", { name: title }),
     signUpPasswordInput: (): Locator => this.page.getByRole('textbox', { name: 'Password *' }),
     dobDateSelect: (): Locator => this.page.locator('#days'),
     dobMonthSelect: (): Locator => this.page.locator('#months'),
@@ -37,30 +37,63 @@ export default class SignUpSignIn {
   static generateRandomEmail() {
     return `auto_${Date.now()}_${Math.floor(Math.random() * 1000)}@gmail.com`;
   }
+
+  async retry(action: () => Promise<void>, retries = 3) {
+
+    for (let i = 0; i < retries; i++) {
+      try {
+        await action();
+        return;
+      } catch (error) {
+        if (i === retries - 1) {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async createAccount(createAccount: any) {
+    await this.page.goto(URLS.pages.login);
+
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.selectors.signUpSignInBtn().click();
+    await this.selectors.signUpNameInput().fill(createAccount.username);
+    await this.selectors.signUpEmailInput().fill(createAccount.email);
+    await this.selectors.signUpBtn().click();
+
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.selectors.checkBox(createAccount.title || "Mr.").check();
+    await this.selectors.signUpPasswordInput().fill(createAccount.password);
+    await this.selectors.dobDateSelect().selectOption(createAccount.date);
+    await this.selectors.dobMonthSelect().selectOption(createAccount.month);
+    await this.selectors.dobYearSelect().selectOption(createAccount.year);
+    await this.selectors.firstNameInput().fill(createAccount.firstName);
+    await this.selectors.lastNameInput().fill(createAccount.lastName);
+    await this.selectors.companyNameInput().fill(createAccount.company);
+    await this.selectors.addressInput().fill(createAccount.addressLine);
+    await this.selectors.stateInput().fill(createAccount.state);
+    await this.selectors.cityInput().fill(createAccount.city);
+    await this.selectors.zipcodeInput().fill(createAccount.zipcode);
+    await this.selectors.mobileNumberInput().fill(createAccount.mobile);
+    await this.selectors.createAccountBtn().click();
+
+    await this.page.waitForLoadState('domcontentloaded');
+    await expect(this.selectors.accountCreatedDeletedText()).toContainText(createAccount.accountCreatedMsg);
+    await this.selectors.continueBtn().click();
+
+  }
+
+   async deleteAccount(accountDelete: any){
+    await this.page.goto(URLS.pages.home);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.selectors.deleteBtn().click();
+    await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accounrDeletedMsg);
+
+  }
 }
 
 // utils/generator.js
 export function generateRandomEmail() {
-    return `auto_${Date.now()}_${Math.floor(Math.random() * 1000)}@gmail.com`;
+  return `auto_${Date.now()}_${Math.floor(Math.random() * 1000)}@gmail.com`;
 }
 
-// export async function seachFlight(
-//   page: Page,
-//   fromCity: string,
-//   toCity: string
-// ) {
-//   await this.selectors.selectFromCity().click();
-//   await this.selectors.selectFromCity().fill(fromCity);
-//   await this.selectors.chooseFirstOption().first().click();
-//   await this.waitFor.timeout();
-//   await this.selectors.selectToCity().click();
-//   await this.selectors.selectToCity().fill(toCity);
-//   await this.selectors.chooseFirstOption().first().click();
-//   await this.waitFor.timeout();
-//   await this.selectors.travellerandClass().click();
-//   await this.selectors.chooseBusinessClass().click();
-//   await this.selectors.applyButton().click();
-//   await page.waitForTimeout(2000);
-//   await this.selectors.seachButton().click();
-//   await page.waitForTimeout(2000);
-// }
