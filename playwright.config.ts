@@ -45,7 +45,5 @@ export default defineConfig({
       open: "always"
     }]
   ],
-
-  outputDir: "test-results/",
-
+  
 });
