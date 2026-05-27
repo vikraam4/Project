@@ -1,6 +1,15 @@
-<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="15.315648000000001">
-<testsuite name="TC001/registeration.e2e.spec.ts" timestamp="2026-05-27T09:08:15.701Z" hostname="" tests="1" failures="0" skipped="0" time="14.201" errors="0">
-<testcase name="Registration › TC001 - Create Account and Delete" classname="TC001/registeration.e2e.spec.ts" time="14.201">
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="17.112861000000002">
+<testsuite name="TC001/registeration.e2e.spec.ts" timestamp="2026-05-27T09:42:56.395Z" hostname="" tests="1" failures="0" skipped="0" time="15.774" errors="0">
+<testcase name="Registration › TC001 - Create Account and Delete" classname="TC001/registeration.e2e.spec.ts" time="15.774">
+<system-out>
+<![CDATA[Email: auto_1779874977129_760@gmail.com
+Password: Pass@1779874977129990
+✓ Account Created Successfully!
+✓ Account Deleted Successfully!
+
+[[ATTACHMENT|TC001-registeration.e2e-Re-230db---Create-Account-and-Delete/trace.zip]]
+]]>
+</system-out>
 </testcase>
 </testsuite>
 </testsuites>

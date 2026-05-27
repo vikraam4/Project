@@ -8,14 +8,35 @@ export default defineConfig({
 
   timeout: 30000,
 
+  retries: 1,
+
   use: {
+
     headless: true,
-    baseURL: "https://automationexercise.com/"
+
+    baseURL: "https://automationexercise.com/",
+
+    screenshot: "only-on-failure",
+
+    video: "on",
+
+    trace: "on"
+
   },
 
   reporter: [
+
     ["list"],
-    ["junit", { outputFile: "test-results/results.xml" }]
+
+    ["junit", {
+      outputFile: "test-results/results.xml"
+    }],
+
+    ["html", {
+      outputFolder: "playwright-report",
+      open: "always"
+    }]
+
   ],
 
   outputDir: "test-results/",
