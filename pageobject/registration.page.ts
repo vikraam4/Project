@@ -44,13 +44,18 @@ export default class Registration {
 
   }
 
-  async retry(action: () => Promise<void>, retries = 3) {
+  async retry(action: () => Promise<any>, retries = 3) {
 
     for (let i = 0; i < retries; i++) {
       try {
+        console.log(`Attempt: ${i + 1}`);
         await action();
+        if (i > 0) {
+          console.log(`✅ Success after ${i + 1} attempts`);
+        }
         return;
       } catch (error) {
+        console.log(`❌ Retry ${i + 1} failed`);
         if (i === retries - 1) {
           throw error;
         }
@@ -62,7 +67,11 @@ export default class Registration {
     const randomEmail = Registration.generateRandomEmail();
     const randomPassword = Registration.generateRandomPassword();
 
-    await this.page.goto(URLS.pages.login);
+    await this.retry(async () => {
+
+      await this.page.goto(URLS.pages.login);
+
+    });
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.signUpSignInBtn().click();
     await this.selectors.signUpNameInput().fill(createAccount.username);
@@ -94,11 +103,15 @@ export default class Registration {
   }
 
   async deleteAccount(accountDelete: any) {
-    await this.page.goto(URLS.pages.home);
+    
+    await this.retry(async () => {
+      await this.page.goto(URLS.pages.home);
+    });
+
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.deleteBtn().click();
     await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accountDeletedMsg);
-        console.log("✓ Account Deleted Successfully!");
+    console.log("✓ Account Deleted Successfully!");
 
   }
 }
