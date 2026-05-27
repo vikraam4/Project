@@ -13,6 +13,7 @@ export default class Registration {
     signUpEmailInput: (): Locator => this.page.locator('form').filter({ hasText: 'Signup' }).getByPlaceholder('Email Address'),
     signUpBtn: (): Locator => this.page.getByRole('button', { name: 'Signup' }),
     checkBox: (title: string): Locator => this.page.getByRole("radio", { name: title }),
+    userExistMsg: (message: string): Locator => this.page.getByText(message),
     signUpPasswordInput: (): Locator => this.page.getByRole('textbox', { name: 'Password *' }),
     dobDateSelect: (): Locator => this.page.locator('#days'),
     dobMonthSelect: (): Locator => this.page.locator('#months'),
@@ -103,7 +104,7 @@ export default class Registration {
   }
 
   async deleteAccount(accountDelete: any) {
-    
+
     await this.retry(async () => {
       await this.page.goto(URLS.pages.home);
     });
@@ -112,6 +113,20 @@ export default class Registration {
     await this.selectors.deleteBtn().click();
     await expect(this.selectors.accountCreatedDeletedText()).toContainText(accountDelete.accountDeletedMsg);
     console.log("✓ Account Deleted Successfully!");
+  }
 
+  async signUpExistingUser(existingUser: any){
+    await this.retry(async () => {
+      await this.page.goto(URLS.pages.login);
+    });
+
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.selectors.signUpSignInBtn().click();
+    await this.selectors.signUpNameInput().fill(existingUser.username);
+    await this.selectors.signUpEmailInput().fill(existingUser.email);
+    console.log("Email:", existingUser.email);
+    await this.selectors.signUpBtn().click();
+    await this.selectors.userExistMsg(existingUser.message);
+    console.log("message:", existingUser.message);
   }
 }

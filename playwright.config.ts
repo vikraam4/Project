@@ -1,8 +1,9 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "./src",
 
+  workers: 1,
+  testDir: "./src",
   testMatch: "**/*.e2e.spec.ts",
   timeout: 30000,
   retries: 1,
@@ -13,21 +14,39 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "on",
     trace: "on"
+
   },
+
+  //Cross Browser
+  projects: [
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"]
+      }
+    },
+    {
+      name: "firefox",
+      use: {
+        ...devices["Desktop Firefox"]
+      }
+    },
+    {
+      name: "webkit",
+      use: {
+        ...devices["Desktop Safari"]
+      }
+    }
+  ],
 
   reporter: [
     ["list"],
-    ["junit", {
-      outputFile: "test-results/results.xml"
-    }],
-
     ["html", {
       outputFolder: "playwright-report",
       open: "always"
     }]
-
   ],
 
   outputDir: "test-results/",
-
+  
 });

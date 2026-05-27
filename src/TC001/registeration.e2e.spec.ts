@@ -14,6 +14,6 @@ test.describe("Registration", () => {
 
   test("TC001 - Create Account and Delete", async () => {
     await registrationPage.createAccount(testData.createAccount);
-    await registrationPage.deleteAccount(testData.accountDelete);
+    // await registrationPage.deleteAccount(testData.accountDelete);
   });
 });

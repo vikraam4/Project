@@ -1,0 +1,7 @@
+{
+    "existingUser": {
+        "username": "automation test",
+        "email": "auto_1779898195748_166@gmail.com",
+        "message": "Email Address already exist!"   
+    }
+}
