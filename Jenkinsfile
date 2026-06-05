@@ -30,18 +30,12 @@ pipeline {
                 sh 'npx playwright test'
             }
         }
-
-        stage('Generate HTML Report') {
-            steps {
-                sh 'npx playwright show-report || true'
-            }
-        }
     }
 
     post {
         always {
 
-            // Archive report files
+            // Always generate report folder from Playwright config
             archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
 
             // Publish HTML report in Jenkins UI
