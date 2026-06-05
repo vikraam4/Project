@@ -5,6 +5,10 @@ pipeline {
         nodejs 'Node20'
     }
 
+    triggers {
+        cron('30 7 * * 6,0')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -15,7 +19,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'npm ci || npm install'
             }
         }
 
@@ -35,18 +39,27 @@ pipeline {
     post {
         always {
 
-            // Always generate report folder from Playwright config
             archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
 
-            // Publish HTML report in Jenkins UI
             publishHTML([
                 reportDir: 'playwright-report',
                 reportFiles: 'index.html',
-                reportName: 'Playwright Report',
+                reportName: 'Playwright HTML Report',
                 keepAll: true,
                 alwaysLinkToLastBuild: true,
                 allowMissing: true
             ])
+
+            emailext (
+                to: "vikramsingh122001@gmail.com",
+                subject: "Playwright Report - Build #${BUILD_NUMBER}",
+                body: """
+Build: ${BUILD_NUMBER}
+Status: ${currentBuild.currentResult}
+
+Report: ${BUILD_URL}artifact/playwright-report/index.html
+"""
+            )
         }
     }
 }
