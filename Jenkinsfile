@@ -1,65 +1,40 @@
-pipeline {
-    agent any
+post {
+    always {
 
-    tools {
-        nodejs 'Node20'
-    }
+        archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
+        archiveArtifacts artifacts: 'allure-report/**', allowEmptyArchive: true
 
-    triggers {
-        cron('30 7 * * 6,0')
-    }
+        publishHTML([
+            reportDir: 'playwright-report',
+            reportFiles: 'index.html',
+            reportName: 'Playwright HTML Report',
+            keepAll: true,
+            alwaysLinkToLastBuild: true,
+            allowMissing: true
+        ])
 
-    stages {
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: 'allure-results']]
+        ])
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm ci || npm install'
-            }
-        }
-
-        stage('Install Playwright Browsers') {
-            steps {
-                sh 'npx playwright install'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'npx playwright test'
-            }
-        }
-    }
-
-    post {
-        always {
-
-            archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
-
-            publishHTML([
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright HTML Report',
-                keepAll: true,
-                alwaysLinkToLastBuild: true,
-                allowMissing: true
-            ])
-
-            emailext (
-                to: "vikramsingh122001@gmail.com",
-                subject: "Playwright Report - Build #${BUILD_NUMBER}",
-                body: """
+        emailext(
+            to: "vikramsingh122001@gmail.com",
+            subject: "Playwright Report - Build #${BUILD_NUMBER}",
+            body: """
 Build: ${BUILD_NUMBER}
 Status: ${currentBuild.currentResult}
 
-Report: ${BUILD_URL}artifact/playwright-report/index.html
+Console:
+${BUILD_URL}
+
+Playwright Report:
+${BUILD_URL}artifact/playwright-report/index.html
+
+Allure Report:
+${BUILD_URL}allure
 """
-            )
-        }
+        )
     }
 }

@@ -31,7 +31,8 @@ export default defineConfig({
     ["html", {
       outputFolder: "playwright-report",
       open: "never"
-    }]
+    }],
+    ['allure-playwright']
   ],
 
 });

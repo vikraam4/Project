@@ -1,0 +1,4 @@
+Email: perform3485@autoexercise.com
+Password: Pass@35726
+✓ Account Created Successfully!
+filePath: /Users/vikram/Playwright/automation-exercise/resources/fileUpload/sample_pdf.pdf

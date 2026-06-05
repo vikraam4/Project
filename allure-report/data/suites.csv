@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8809","TC001 - Create Account and Delete","chromium","2026-06-06","passed","2026-06-06","Registration","TC001/registeration.e2e.spec.ts","",""
+"","7307","TC003 - Create Account using existing user","chromium","2026-06-06","passed","2026-06-06","Contact Us Form with new user","TC003/TC003.e2e.spec.ts","",""
+"","3839","TC002 - Create Account using existing user","chromium","2026-06-06","passed","2026-06-06","SignUp with existing User","TC002/TC002.e2e.spec.ts","",""
