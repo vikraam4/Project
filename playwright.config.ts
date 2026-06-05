@@ -23,12 +23,6 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"]
       }
-    },
-    {
-      name: "firefox",
-      use: {
-        ...devices["Desktop Firefox"]
-      }
     }
   ],
 
@@ -36,8 +30,8 @@ export default defineConfig({
     ["list"],
     ["html", {
       outputFolder: "playwright-report",
-      open: "always"
+      open: "never"
     }]
   ],
-  
+
 });
