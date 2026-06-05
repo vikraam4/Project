@@ -1,35 +1,29 @@
 pipeline {
     agent any
 
-    environment {
-        NODEJS_HOME = tool name: 'NodeJS', type: 'NodeJS'
-        PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/vikraam4/Project.git', branch: 'main'
+                checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
+            }
+        }
+
+        stage('Install Playwright') {
+            steps {
                 sh 'npx playwright install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm run test'
+                sh 'npx playwright test'
             }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
         }
     }
 }
