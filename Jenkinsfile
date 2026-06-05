@@ -1,52 +1,40 @@
-pipeline {
-    agent any
+post {
+    always {
 
-    tools {
-        nodejs 'Node20'
-    }
+        archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
+        archiveArtifacts artifacts: 'allure-report/**', allowEmptyArchive: true
 
-    stages {
+        publishHTML([
+            reportDir: 'playwright-report',
+            reportFiles: 'index.html',
+            reportName: 'Playwright HTML Report',
+            keepAll: true,
+            alwaysLinkToLastBuild: true,
+            allowMissing: true
+        ])
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: 'allure-results']]
+        ])
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
+        emailext(
+            to: "vikramsingh122001@gmail.com",
+            subject: "Playwright Report - Build #${BUILD_NUMBER}",
+            body: """
+Build: ${BUILD_NUMBER}
+Status: ${currentBuild.currentResult}
 
-        stage('Install Playwright Browsers') {
-            steps {
-                sh 'npx playwright install'
-            }
-        }
+Console:
+${BUILD_URL}
 
-        stage('Run Tests') {
-            steps {
-                sh 'npx playwright test'
-            }
-        }
-    }
+Playwright Report:
+${BUILD_URL}artifact/playwright-report/index.html
 
-    post {
-        always {
-
-            // Always generate report folder from Playwright config
-            archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
-
-            // Publish HTML report in Jenkins UI
-            publishHTML([
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright Report',
-                keepAll: true,
-                alwaysLinkToLastBuild: true,
-                allowMissing: true
-            ])
-        }
+Allure Report:
+${BUILD_URL}allure
+"""
+        )
     }
 }
