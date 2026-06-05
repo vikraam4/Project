@@ -46,40 +46,18 @@ export default class Registration {
 
   }
 
-async clickCloseAdButton() {
-  if (await this.selectors.closeAdButton().isVisible()) {
-    await this.selectors.closeAdButton().click();
-  }
-  await this.waitFor;
-}
-
-  async retry(action: () => Promise<any>, retries = 3) {
-
-    for (let i = 0; i < retries; i++) {
-      try {
-        console.log(`Attempt: ${i + 1}`);
-        await action();
-        if (i > 0) {
-          console.log(`✅ Success after ${i + 1} attempts`);
-        }
-        return;
-      } catch (error) {
-        console.log(`❌ Retry ${i + 1} failed`);
-        if (i === retries - 1) {
-          throw error;
-        }
-      }
+  async clickCloseAdButton() {
+    if (await this.selectors.closeAdButton().isVisible()) {
+      await this.selectors.closeAdButton().click();
     }
+    await this.waitFor;
   }
-
 
   async createAccount(createAccount: any) {
     const randomEmail = Registration.generateRandomEmail();
     const randomPassword = Registration.generateRandomPassword();
 
-    await this.retry(async () => {
-      await this.page.goto(URLS.pages.login);
-    });
+    await this.page.goto(URLS.pages.login);
 
     await this.page.waitForURL(URLS.pages.login);
     await this.page.waitForLoadState('domcontentloaded');
@@ -116,9 +94,7 @@ async clickCloseAdButton() {
 
     await this.clickCloseAdButton();
 
-    await this.retry(async () => {
-      await this.page.goto(URLS.pages.home);
-    });
+    await this.page.goto(URLS.pages.home);
     await this.page.waitForURL(URLS.pages.home);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.deleteBtn().click();
@@ -126,10 +102,8 @@ async clickCloseAdButton() {
     console.log("✓ Account Deleted Successfully!");
   }
 
-  async signUpExistingUser(existingUser: any){
-    await this.retry(async () => {
-      await this.page.goto(URLS.pages.login);
-    });
+  async signUpExistingUser(existingUser: any) {
+    await this.page.goto(URLS.pages.login);
     await this.page.waitForURL(URLS.pages.login);
     await this.page.waitForLoadState('domcontentloaded');
     await this.selectors.signUpSignInBtn().click();
