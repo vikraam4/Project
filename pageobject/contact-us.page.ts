@@ -53,7 +53,7 @@ export default class ContactUs {
 
     async contactFormWorkFlow(contactUs: any) {
         await this.selectors.contactUsBtn().click();
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState('domcontentloaded');
         await this.selectors.nameInput().fill(contactUs.name);
         await this.selectors.emailInput().fill(contactUs.email);
         await this.selectors.subjectInput().fill(contactUs.subject);
