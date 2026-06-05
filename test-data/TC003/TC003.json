@@ -1,0 +1,28 @@
+{
+    "createAccount": {
+        "username": "test",
+        "email": "testing332@gmail.com",
+        "password": "test1234",
+        "title": "",
+        "firstName": "John",
+        "lastName": "Wick",
+        "date": "2",
+        "month": "4",
+        "year": "2001",
+        "company": "Cognizant",
+        "addressLine": "123 Testing St",
+        "state": "Telangana",
+        "city": "Hyderabad",
+        "zipcode": "500084",
+        "mobile": "8878907431",
+        "accountCreatedMsg": "Account Created!"
+    },
+    "contactUs": {
+        "name": "test",
+        "email":"test321@gmail.com",
+        "subject":"test-subject",
+        "fileName": "sample_pdf",
+        "message":"test message",
+        "successMsg": "Success! Your details have been submitted successfully."
+    }
+}
