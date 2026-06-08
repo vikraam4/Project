@@ -1,4 +1,4 @@
-name: Real PR Code Checker
+name: PR Code Review Bot
 
 on:
   pull_request:
@@ -14,44 +14,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout full history (IMPORTANT FIX)
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # 1️⃣ Get diff
-      - name: Fetch PR diff
+      # 2️⃣ Get PR diff safely (NO git merge-base errors)
+      - name: Get PR Diff
+        id: diff
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pull_number = context.payload.pull_request.number;
+
+            const { data } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number,
+              mediaType: { format: "diff" }
+            });
+
+            return data;
+
+      # 3️⃣ Save diff to file
+      - name: Save Diff
         run: |
-          git fetch origin main
-          git diff origin/main...HEAD > diff.txt
+          echo "${{ steps.diff.outputs.result }}" > diff.txt
 
-      # 2️⃣ Analyze diff (basic bug detection)
+      # 4️⃣ Analyze Diff (Bug Detection)
       - name: Analyze Code
         id: analyze
         run: |
-          echo "Scanning for issues..."
-
           REPORT=""
 
-          if grep -i "console.log" diff.txt; then
+          if grep -qi "console.log" diff.txt; then
             REPORT="$REPORT ⚠️ console.log found\n"
           fi
 
-          if grep -i "TODO" diff.txt; then
-            REPORT="$REPORT ⚠️ TODO comments found\n"
+          if grep -qi "TODO" diff.txt; then
+            REPORT="$REPORT ⚠️ TODO found\n"
           fi
 
-          if grep -i "any" diff.txt; then
-            REPORT="$REPORT ⚠️ 'any' type used (TypeScript bad practice)\n"
+          if grep -qi "any" diff.txt; then
+            REPORT="$REPORT ⚠️ 'any' type used (TS risk)\n"
           fi
 
-          if grep -i "password\|secret\|token" diff.txt; then
-            REPORT="$REPORT 🚨 Possible secret leakage risk\n"
+          if grep -qi "password\|secret\|token" diff.txt; then
+            REPORT="$REPORT 🚨 Possible secret detected\n"
           fi
 
           echo "report<<EOF" >> $GITHUB_OUTPUT
           echo -e "$REPORT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # 3️⃣ Fail build if critical issue
-      - name: Fail on critical issues
+      # 5️⃣ FAIL BUILD if critical issue
+      - name: Fail on Critical Issues
         run: |
           echo "${{ steps.analyze.outputs.report }}"
 
@@ -60,17 +77,18 @@ jobs:
             exit 1
           fi
 
-      # 4️⃣ Comment on PR
-      - name: Comment Review
+      # 6️⃣ Comment on PR
+      - name: Comment PR
         uses: actions/github-script@v7
         with:
           script: |
             const report = `${{ steps.analyze.outputs.report }}`;
 
-            const body = `🤖 Real PR Code Review\n\n` +
-              (report || "✅ No major issues found") +
-              `\n\n---\n` +
-              `Checks performed:\n` +
+            const body =
+              `🤖 Real PR Code Review Bot\n\n` +
+              `${report || "✅ No issues found"}\n\n` +
+              `---\n` +
+              `Checks:\n` +
               `- console.log detection\n` +
               `- TODO detection\n` +
               `- TypeScript unsafe 'any'\n` +
