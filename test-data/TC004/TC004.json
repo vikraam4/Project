@@ -17,13 +17,8 @@
         "mobile": "8878907431",
         "accountCreatedMsg": "Account Created!"
     },
-    "contactUs": {
-        "name": "test",
-        "email":"test321@gmail.com",
-        "subject":"test-subject",
-        "fileName": "sample_pdf",
-        "message":"test message",
-        "successMsg": "Success! Your details have been submitted successfully."
+    "testCase":{
+        "title": "Test Cases"
     },
     "accountDelete": {
         "accountDeletedMsg": "Account Deleted!"
