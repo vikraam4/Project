@@ -17,6 +17,9 @@ test.describe("Contact Us Form with new user", () => {
     test("TC003 - Create Account using existing user", async () => {
         await registrationPage.createAccount(testData.createAccount);
         await contactUsPage.contactFormWorkFlow(testData.contactUs);
+    });
+
+    test.beforeAll(async () => {
         await registrationPage.deleteAccount(testData.accountDelete);
     });
 });
