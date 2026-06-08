@@ -1,8 +1,13 @@
-name: PR Static Review Bot
+name: Real PR Code Checker
 
 on:
   pull_request:
     branches: [main]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
 
 jobs:
   review:
@@ -11,19 +16,65 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get PR Info
+      # 1️⃣ Get diff
+      - name: Fetch PR diff
+        run: |
+          git fetch origin main
+          git diff origin/main...HEAD > diff.txt
+
+      # 2️⃣ Analyze diff (basic bug detection)
+      - name: Analyze Code
+        id: analyze
+        run: |
+          echo "Scanning for issues..."
+
+          REPORT=""
+
+          if grep -i "console.log" diff.txt; then
+            REPORT="$REPORT ⚠️ console.log found\n"
+          fi
+
+          if grep -i "TODO" diff.txt; then
+            REPORT="$REPORT ⚠️ TODO comments found\n"
+          fi
+
+          if grep -i "any" diff.txt; then
+            REPORT="$REPORT ⚠️ 'any' type used (TypeScript bad practice)\n"
+          fi
+
+          if grep -i "password\|secret\|token" diff.txt; then
+            REPORT="$REPORT 🚨 Possible secret leakage risk\n"
+          fi
+
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$REPORT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # 3️⃣ Fail build if critical issue
+      - name: Fail on critical issues
+        run: |
+          echo "${{ steps.analyze.outputs.report }}"
+
+          if echo "${{ steps.analyze.outputs.report }}" | grep -q "🚨"; then
+            echo "Critical issue found - blocking merge"
+            exit 1
+          fi
+
+      # 4️⃣ Comment on PR
+      - name: Comment Review
         uses: actions/github-script@v7
         with:
           script: |
-            const pr = context.payload.pull_request;
+            const report = `${{ steps.analyze.outputs.report }}`;
 
-            const body = `🤖 PR Review Bot\n\n` +
-              `✔ PR Title: ${pr.title}\n` +
-              `✔ Author: ${pr.user.login}\n\n` +
-              `⚠️ Note:\n` +
-              `- Tests are NOT executed\n` +
-              `- Please ensure manual testing is done\n` +
-              `- Follow coding standards`;
+            const body = `🤖 Real PR Code Review\n\n` +
+              (report || "✅ No major issues found") +
+              `\n\n---\n` +
+              `Checks performed:\n` +
+              `- console.log detection\n` +
+              `- TODO detection\n` +
+              `- TypeScript unsafe 'any'\n` +
+              `- Secret pattern scan`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
